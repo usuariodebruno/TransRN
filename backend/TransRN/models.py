@@ -5,13 +5,13 @@ class Funcionario(models.Model):
     # Pretendendo usar: first_name, last_name, email
     user = models.OneToOneField(User, on_delete=models.CASCADE) 
     cpf = models.CharField(max_length=14, unique=True)
-    matricula = models.IntegerField(max_length=6, blank=False, null=False) # Campo obrigatório
-    telefone = models.IntegerField(max_length=11, blank=False, null=False) 
+    matricula = models.IntegerField(blank=False, null=False) # Campo obrigatório
+    telefone = models.IntegerField(blank=False, null=False) 
     data_nascimento = models.DateField (blank=False, null=False )
     data_admissao = models.DateField (blank=True, null=True ) #  data_evento=date(2024, 10, 20)
     habilitacao = models.BooleanField(default=False)
     foto = models.ImageField(upload_to='images/funcionario/', null=True, blank=True)
-    pasep = models.IntegerField(max_length=12, blank=True, null=True) # Não obrigatório  
+    pasep = models.IntegerField(blank=True, null=True) # Não obrigatório  
     observacoes = models.CharField(max_length=5000, blank=True, null=True)   
     # Pode-se incluir: Lotação & Setor 
 
@@ -20,18 +20,18 @@ class Funcionario(models.Model):
     
 class Habilitacao (models.Model):    
     habilitacao_documento = models.ImageField(upload_to='images/habilitacao/', null=True, blank=True)
-    habilitacao_numero = models.IntegerField(max_length=11, blank=False, null=False) # Campo obrigatório
+    habilitacao_numero = models.IntegerField(blank=False, null=False) # Campo obrigatório
     habilitacao_validade = models.DateField (blank=True, null=True ) #  data_evento=date(2024, 10, 20)
     habilitacao_categoria = models.CharField(max_length=2, unique=True, choices = [
-        ('A'),
-        ('AB'),
-        ('AC'),
-        ('AD'),
-        ('AE'),
-        ('B'),
-        ('C'),
-        ('D'),        
-        ('E'),
+        ('A', 'A'),
+        ('AB', 'AB'),
+        ('AC', 'AC'),
+        ('AD', 'AD'),
+        ('AE', 'AE'),
+        ('B', 'B'),
+        ('C', 'C'),
+        ('D', 'D'),        
+        ('E', 'E'),
     ])
 
     def __str__(self):
@@ -48,7 +48,7 @@ class Bairro(models.Model):
 
     def __str__(self):
         return f'Nome: {self.nome}'
-    
+  
 class Motorista(models.Model):
     funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE, null=False)
     habilitacao = models.ForeignKey(Habilitacao, on_delete=models.CASCADE, null=False)    
@@ -57,14 +57,15 @@ class Motorista(models.Model):
         return f'Nome: {self.funcionario.user.first_name} (Habilitação: {self.habilitacao})'
 
 class Endereco(models.Model):
-    endereco_residencial = models.CharField (max_length=500,)
+    endereco_residencial = models.CharField (max_length=500, blank=False, null=False)
     numero = models.CharField(max_length=10,) 
-    cep = models.IntegerField(max_length=8, blank=True, null=True)     
-    bairro = models.ForeignKey(Bairro,on_delete=models.CASCADE, null=False, blank=False,)   
+    cep = models.IntegerField(blank=True, null=True)     
+    bairro = models.ForeignKey(Bairro, on_delete=models.CASCADE, null=False, blank=False,)   
 
     def __str__(self):
-        return f'Endereço: {self.endereco_residencial}'
-
+        return f'Endereço: {self.endereco_residencial}, Bairro: {self.bairro}'
+    
+""" 
 class Veiculo(models.Model):
     placa = models.CharField(max_length=7, unique=True, blank=False, null=False) # Campo obrigatório
     renavam = models.IntegerField(max_length=11, unique=True, blank=False, null=False) # Campo obrigatório
@@ -121,3 +122,4 @@ class Multas(models.Model):
         ('M', 'Municipal'),
     ],),
     documento = models.ForeignKey(Documento, null=False, blank=False,)
+"""
